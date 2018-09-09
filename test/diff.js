@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const childProcess = require('child_process')
-const gm = require('gm')
+const sharp = require('sharp')
 const convert = require('../lib/index')
 
 // process an image, and compare to the expected output
@@ -67,7 +67,7 @@ function compareMetadata (test, expected, actual, fields) {
 }
 
 function compareVisual (test, expected, actual, tolerance) {
-  gm.compare(expected, actual, tolerance, (err, similar, equality) => {
+  sharp.compare(expected, actual, tolerance, (err, similar, equality) => {
     if (err) return test.end(err)
     if (!similar) return test.end(`${actual} is visually different from expected (equality=${equality})`)
     test.pass(`${actual} is visually similar to expected`)
