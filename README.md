@@ -23,6 +23,10 @@ This module requires the following binaries available in the system path:
 - [FFMpeg](https://ffmpeg.org/) for processing videos
 - [Gifsicle](http://www.lcdf.org/gifsicle/) for processing animated GIFs
 
+To run the tests, you will also need
+
+- [ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/)
+
 ## Usage
 
 ```js
@@ -139,7 +143,49 @@ This method supports all  the same options as `.image()`.
 ```
 
 Transcodes the video in `source` to a web-friendly format and lower bitrate, and writes it in `target`.
-Currently doesn't support any options, simply pass an empty hash (`{}`).
+You can specify the following options:
+
+##### Format
+
+The default export format is `mp4`.
+You can specify an export format by adding a `format` option:
+
+```js
+opts = { format: 'mp4'  } // H264 encoder
+opts = { format: 'webm' } // VP9 encoder
+```
+
+Note: encoding as `webm` is much slower.
+
+##### Video quality
+
+The default behaviour is to use CRF (constant rate factor) to control the output quality.
+The default value is `75%`.
+
+```js
+// value between 0 (worst) and 100 (best)
+opts = { quality: 75 }
+```
+
+Notes:
+
+- the quality scale is not linear
+- you will most likely want a value between 50% and 90%
+- values over 90% can generate files larger than the original
+
+![Quality size ratio](docs/quality.png)
+
+##### Variable bitrate
+
+Instead of CRF, you can specify a variable bitrate (a.k.a. average bitrate, or target bitrate) by using the `bitrate` option.
+Check the [ffmpeg docmentation](https://trac.ffmpeg.org/wiki/Encode/H.264) for more information.
+This is not compatible with the `quality` option.
+
+```js
+opts = { bitrate: '1200k' }
+```
+
+##### Conversion progress
 
 The `.video()` call returns an [EventEmitter](https://nodejs.org/api/events.html)
 to follow the progress of the conversion, since it can take a long time.
@@ -165,5 +211,4 @@ If you don't have all dependencies installed, you can also run the tests in Dock
 
 ```bash
 docker build -t downsize-test .
-docker run downsize-test
 ```

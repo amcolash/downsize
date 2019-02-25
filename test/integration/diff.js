@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const childProcess = require('child_process')
 const gm = require('gm')
-const convert = require('../lib/index')
+const convert = require('../../lib/index')
 
 // process an image, and compare to the expected output
 exports.image = function (test, args) {
@@ -32,7 +32,7 @@ exports.video = function (test, args) {
   const expected = `test-data/expected/${args.expect}`
   convert.video(input, actual, args.options, (err) => {
     if (err) return test.end(err)
-    convert.still(actual, `${actual}.jpg`, args.options, (err) => {
+    convert.still(actual, `${actual}.jpg`, {}, (err) => {
       if (err) return test.end(err)
       compareImage(test, `${expected}.jpg`, `${actual}.jpg`)
     })
